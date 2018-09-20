@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SQLHomework
 {
-    public class location
+    public class Location
     {
         public int LocationID { get; set; }
         public string Name { get; set; }

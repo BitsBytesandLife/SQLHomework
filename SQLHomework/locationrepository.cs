@@ -136,6 +136,67 @@ namespace SQLHomework
 
         }
 
+        /// <summary>
+        /// DeleteLocation method deletes and record from the location table
+        /// takes one parameters  (LocationID)
+        /// Deletes and record with a specific LocationId .
+        /// </summary>
+        public void DeleteLocation(int LocationId)
+
+        {
+
+            using (var conn = new MySqlConnection(connectionString))
+
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "DELETE FROM Location WHERE LocationId = @lId;";
+                cmd.Parameters.AddWithValue("lId", LocationId);
+                cmd.ExecuteNonQuery();
+            }
+
+        }
+
+        /// <summary>
+        /// DeleteLocation method deletes and record from the location table
+        /// takes one parameters  (Name)
+        /// Deletes and record with a specific Name
+        /// Warning: This is deleting records matching wildcard "%" + name + "%".
+        ///          This may result in multiple records may me deleted.
+        ///          The preferred overloaded method DeleteLocation(string name, int LocationId)
+        /// </summary>
+        public void DeleteLocation(string name)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "DELETE FROM Location WHERE Name LIKE @name;";
+                cmd.Parameters.AddWithValue("name", "%" + name + "%");
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// DeleteLocation method deletes and record from the location table
+        /// takes one parameters  (LocationID and Name)
+        /// Deletes and record with a specific LocationId and Name .
+        /// </summary>
+        public void DeleteLocation(int LocationId,string name)
+        {
+            using (var conn = new MySqlConnection(connectionString))
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "DELETE FROM location WHERE Name LIKE @name AND LocationId = @lid;";
+                cmd.Parameters.AddWithValue("name", "%" + name + "%");
+                cmd.Parameters.AddWithValue("lid", LocationId);
+                cmd.ExecuteNonQuery();
+            }
+        }
 
 
     }

@@ -9,6 +9,40 @@ namespace SQLHomework
     {
         private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
 
+
+        public List<Location> GetLocation()
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+
+            using (conn)
+            {
+                conn.Open();
+
+                MySqlCommand cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT LocationId, Name, CostRate, Availability, ModifiedDate FROM location;";
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+
+                List<Location> locations = new List<Location>();
+                while (reader.Read())
+                {
+                    Location loc = new Location();
+                    loc.LocationID = (int)reader["LocationID"];
+                    loc.Name = reader["Name"].ToString();
+                    loc.CostRate = (double)reader["CostRate"];
+                    loc.Availability = (decimal)reader["Availability"];
+                    loc.ModifiedDate = (DateTime)reader["ModifiedDate"];
+
+                    locations.Add(loc);
+                }
+                return locations;
+
+            }
+        }
+
+
+
+
         /// <summary>
         /// CreateLocation method takes four parameters  (n = Name, c = CostRate, a = Availability, d = ModifiedDate)
         /// And creates a Location within our database with that Name,CostRate, Availability, and ModifiedDate.

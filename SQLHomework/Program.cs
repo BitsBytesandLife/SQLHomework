@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SQLHomework
 {
@@ -6,13 +9,51 @@ namespace SQLHomework
     {
         static void Main(string[] args)
         {
-            LocationRepository location = new LocationRepository();
+
+            var config = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+
+                .SetBasePath(Directory.GetCurrentDirectory())
+
+                .AddJsonFile("appsettings.json")
+
+#if DEBUG
+
+                .AddJsonFile("appsettings.Debug.json")
+
+#else
+
+                .AddJsonFile("appsettings.Release.json")
+
+#endif
+
+                .Build();
+
+
+
+            string connString = config.GetConnectionString("DefaultConnection");
+
+            LocationRepository locRepo = new LocationRepository();
+
+            List<Location> ReadLocations = locRepo.GetLocation();
+
+
+
+            foreach (Location readlocation in ReadLocations)
+            {
+                Console.WriteLine($"LocationID = {readlocation.LocationID} Name = {readlocation.Name} CostRate = {readlocation.CostRate}\n" +
+                                  $"Availability = {readlocation.Availability} ModifiedDate = {readlocation.ModifiedDate}\n");
+                //Console.WriteLine($"{product.Id} {product.Name}------${product.Price}\n");
+            }
+
+
+
+
 
             //Console.WriteLine("Creating new Location enrty...");
 
-            //location.CreateLocation("Beard Oil", 1.50, 15.00m, DateTime.Now);
+            //locRepo.CreateLocation("Beard Oil", 1.50, 15.00m, DateTime.Now);
             //Console.WriteLine("Transaction Completed!!!");
-           // Console.ReadLine();
+            // Console.ReadLine();
             /*
             Location l = new Location();
             l.LocationID = 61;
@@ -24,26 +65,26 @@ namespace SQLHomework
 
             //Console.WriteLine("Updating Location Table.....");
             //Udate All fields
-            //location.UpdateLocation(l);
+            //locRepo.UpdateLocation(l);
 
-            //Update Name
-            //location.UpdateLocation("Kingz of Kingz Beard Club Beard Oil",61,DateTime.Now);
+
+            locRepo.UpdateLocation("Kingz of Kingz Beard Club Beard Oil",61,DateTime.Now);
 
             //Update CostRate
-            //location.UpdateLocation(3.15, 61, DateTime.Now);
+            //locRepo.UpdateLocation(3.15, 61, DateTime.Now);
 
             //Update Availability
-            //location.UpdateLocation(25.50m, 61, DateTime.Now);
+            //locRepo.UpdateLocation(25.50m, 61, DateTime.Now);
 
 
             Console.WriteLine("Deleting an record from the Location Table");
             //Deleting a record based on LocationId
-            //location.DeleteLocation(61);
+            //locRepo.DeleteLocation(61);
 
             //Deleteing a record based on LocationID
-            //location.DeleteLocation("Beard Oil");
+            //locRepo.DeleteLocation("Beard Oil");
 
-            //location.DeleteLocation(64,"Beard Oil");
+            //locRepo.DeleteLocation(64,"Beard Oil");
 
 
             Console.WriteLine("Transaction Completed!!!");

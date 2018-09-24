@@ -9,7 +9,10 @@ namespace SQLHomework
     {
         private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
 
-
+        /// <summary>
+        ///     This method return the records from the location table.
+        ///     Query: SELECT * FROM location 
+        /// </summary>
         public List<Location> GetLocation()
         {
             MySqlConnection conn = new MySqlConnection(connectionString);
@@ -36,16 +39,73 @@ namespace SQLHomework
                     locations.Add(loc);
                 }
                 return locations;
+            }
+        }
 
+        /// <summary>
+        ///     This method return the record from the location table.
+        ///     Parameter: int ID 
+        ///     Query: SELECT * FROM location WHERE LocationID = ID
+        /// </summary>
+        public void GetOneLocation(int ID)
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+
+            using (conn)
+            {
+                conn.Open();
+
+                MySqlCommand cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT LocationId, Name, CostRate, Availability, ModifiedDate " +
+                                  "FROM location " +
+                                  "WHERE LocationID = @locationid;";
+                cmd.Parameters.AddWithValue("locationid", ID);
+                MySqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Location loc = new Location();
+                    loc.LocationID = (int)reader["LocationID"];
+                    loc.Name = reader["Name"].ToString();
+                    loc.CostRate = (double)reader["CostRate"];
+                    loc.Availability = (decimal)reader["Availability"];
+                    loc.ModifiedDate = (DateTime)reader["ModifiedDate"];
+
+
+                    Console.WriteLine($"LocationID = {loc.LocationID} Name = {loc.Name} CostRate = {loc.CostRate}\n" +
+                                  $"Availability = {loc.Availability} ModifiedDate = {loc.ModifiedDate}\n");
+
+                }
             }
         }
 
 
+        /// <summary>
+        ///     This method returns the last record in the location table
+        ///     The table is ordered by locationID.
+        /// </summary>
+        public int GetLastLocationID()
+        {
+            MySqlConnection conn = new MySqlConnection(connectionString);
+            var lastLocationID = 0;
 
+            using (conn)
+            {
+                conn.Open();
+
+                MySqlCommand cmd = conn.CreateCommand();
+                cmd.CommandText = "SELECT LocationID " +
+                                  "FROM location " +
+                                  "ORDER BY LocationID desc " +
+                                  "LIMIT 1";
+
+                return lastLocationID = (int)cmd.ExecuteScalar();
+            }
+        }
 
         /// <summary>
-        /// CreateLocation method takes four parameters  (n = Name, c = CostRate, a = Availability, d = ModifiedDate)
-        /// And creates a Location within our database with that Name,CostRate, Availability, and ModifiedDate.
+        ///     CreateLocation method takes four parameters  (n = Name, c = CostRate, a = Availability, d = ModifiedDate)
+        ///     And creates a Location within our database with that Name,CostRate, Availability, and ModifiedDate.
         /// </summary>
         public void CreateLocation(string n, double c, decimal a, DateTime m)
         {
@@ -68,9 +128,9 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// UdateLocation method updates the CostRate field in the location table
-        /// takes Location object parameters 
-        /// And updates a Location within our database with that all fields.
+        ///     UpdateLocation method updates the CostRate field in the location table
+        ///     takes Location object parameters 
+        ///     And updates a Location within our database with that all fields.
         /// </summary>
         public void UpdateLocation(Location l)
         {
@@ -96,9 +156,9 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// UdateLocation method updates the Name  field in the location table
-        /// takes three parameters  (n = Name,  l = LocationID, d = ModifiedDate)
-        /// And updates a Location within our database with that a new Name and ModifiedDate.
+        ///     UpdateLocation method updates the Name  field in the location table
+        ///     takes three parameters  (n = Name,  l = LocationID, d = ModifiedDate)
+        ///     And updates a Location within our database with that a new Name and ModifiedDate.
         /// </summary>
         public void UpdateLocation(string n, int l, DateTime m)
         {
@@ -121,9 +181,9 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// UdateLocation method updates the CostRate field in the location table
-        /// takes three parameters  (c = CostRate,  l = LocationID, d = ModifiedDate)
-        /// And updates a Location within our database with that new CostRate and ModifiedDate.
+        ///     UpdateLocation method updates the CostRate field in the location table
+        ///     takes three parameters  (c = CostRate,  l = LocationID, d = ModifiedDate)
+        ///     And updates a Location within our database with that new CostRate and ModifiedDate.
         /// </summary>
         public void UpdateLocation(double c, int l, DateTime m)
         {
@@ -171,9 +231,9 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// DeleteLocation method deletes and record from the location table
-        /// takes one parameters  (LocationID)
-        /// Deletes and record with a specific LocationId .
+        ///     DeleteLocation method deletes and record from the location table
+        ///     takes one parameters  (LocationID)
+        ///     Deletes and record with a specific LocationId .
         /// </summary>
         public void DeleteLocation(int LocationId)
 
@@ -193,12 +253,12 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// DeleteLocation method deletes and record from the location table
-        /// takes one parameters  (Name)
-        /// Deletes and record with a specific Name
-        /// Warning: This is deleting records matching wildcard "%" + name + "%".
-        ///          This may result in multiple records may me deleted.
-        ///          The preferred overloaded method DeleteLocation(string name, int LocationId)
+        ///     DeleteLocation method deletes and record from the location table
+        ///     takes one parameters  (Name)
+        ///     Deletes and record with a specific Name
+        ///     Warning: This is deleting records matching wildcard "%" + name + "%".
+        ///              This may result in multiple records may me deleted.
+        ///              The preferred overloaded method DeleteLocation(string name, int LocationId)
         /// </summary>
         public void DeleteLocation(string name)
         {
@@ -214,11 +274,11 @@ namespace SQLHomework
         }
 
         /// <summary>
-        /// DeleteLocation method deletes and record from the location table
-        /// takes one parameters  (LocationID and Name)
-        /// Deletes and record with a specific LocationId and Name .
+        ///     DeleteLocation method deletes and record from the location table
+        ///     takes one parameters  (LocationID and Name)
+        ///     Deletes and record with a specific LocationId and Name .
         /// </summary>
-        public void DeleteLocation(int LocationId,string name)
+        public void DeleteLocation(int LocationId, string name)
         {
             using (var conn = new MySqlConnection(connectionString))
             {
@@ -232,6 +292,34 @@ namespace SQLHomework
             }
         }
 
+        public void IsRecordInDatabase(int LocationId)
 
+        {
+
+            using (var conn = new MySqlConnection(connectionString))
+
+            {
+                conn.Open();
+                var cmd = conn.CreateCommand();
+
+                cmd.CommandText = "SELECT * FROM Location WHERE LocationId = @lId;";
+                cmd.Parameters.AddWithValue("lId", LocationId);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    Console.WriteLine("Record is in the Database!!!");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    GetOneLocation(LocationId);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Record does not exists");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+
+            }
+        }
     }
 }

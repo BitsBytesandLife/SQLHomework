@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SQLHomework
 {
-    public class LocationRepository
+    public class LocationRepository : IRepository
     {
         private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
 

@@ -8,22 +8,28 @@ namespace SQLHomework
     class Program
     {
         private static LocationRepository locRepo = new LocationRepository();
+        private static DapperLocationRepository dapperLocRepo = new DapperLocationRepository();
         private static List<Location> ReadLocations = locRepo.GetLocation();
         
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Before running the console appliaction look up the /n" +
+            Console.WriteLine("Before running the console application look up the /n" +
                               "Auto-Increment in Location table. Change the value for the new run /n" +
-                              "of the applcation. The current Auto-Increment value is 74 ");
+                              "of the application. The current Auto-Increment value is 90 /n");
             //Setting Application flies
             ConsoleAppSettings();
-            //Creating records
-            CreatingRecords();
+
+
             //Reading records
             ReadingAllLocations();
+
+            //Creating records
+            CreatingRecords();
+            
             //Updating a record
             UpdateTableARecord();
+            
             //Delete record(s)
             DeleteRecords();
 
@@ -52,13 +58,19 @@ namespace SQLHomework
         {
 
             ShowCrudHeading("C (Creating records in the table)");
-            //Create LocationId = 74
+            //Create LocationId = 90
             locRepo.CreateLocation("Beard Oil", 1.50, 15.00m, DateTime.Now);
-            //Create LocationId = 75
+            ShowQueryResults(90, "Record inserted...", ConsoleColor.DarkGreen, ConsoleColor.White);
+            //Create LocationId = 91
             locRepo.CreateLocation("Test 1", 2.50, 4.00m, DateTime.Now);
-            //Create LocationId = 76
+            ShowQueryResults(91, "Record inserted...", ConsoleColor.DarkGreen, ConsoleColor.White);
+            //Create LocationId = 92
             locRepo.CreateLocation("Test 2", 3.00, 8.50m, DateTime.Now);
-           
+            ShowQueryResults(92, "Record inserted...", ConsoleColor.DarkGreen, ConsoleColor.White);
+            //Create from Dapper LocationId = 81
+            dapperLocRepo.CreateLocation("Dapper Test Location",4.00, 7.56m, DateTime.Now);
+            ShowQueryResults(93, "Dapper record inserted...", ConsoleColor.Magenta, ConsoleColor.White);
+
         }
 
         /// <summary>
@@ -70,25 +82,38 @@ namespace SQLHomework
         {
             Location l = new Location
             {
-                LocationID = 74,
+                LocationID = 90,
                 Name = "Kingz of Kingz Beard Oil",
                 CostRate = 2.50,
                 Availability = 20.50m,
                 ModifiedDate = DateTime.Now
             };
 
+            //For Dapper
+            Location l2 = new Location
+            {
+                LocationID = 93,
+                Name = "Dapper Location",
+                CostRate = 4.50,
+                Availability = 7.50m,
+                ModifiedDate = DateTime.Now
+            };
+
             ShowCrudHeading("U (Updating records in the table)");
 
             Console.WriteLine("This will update All fields");
-            ShowUpdateResults(74, "Before the update...", ConsoleColor.White, ConsoleColor.White);
+            ShowQueryResults(90, "Before the update...", ConsoleColor.White, ConsoleColor.White);
             locRepo.UpdateLocation(l);
-            ShowUpdateResults(74, "Updated the all fields", ConsoleColor.Yellow, ConsoleColor.White);
+            ShowQueryResults(90, "Updated the all fields", ConsoleColor.Yellow, ConsoleColor.White);
             locRepo.UpdateLocation("Kingz of Kingz Beard Club Beard Oil", 61, DateTime.Now);
-            ShowUpdateResults(74, "Updated the Name field", ConsoleColor.Yellow, ConsoleColor.White);
+            ShowQueryResults(90, "Updated the Name field", ConsoleColor.Yellow, ConsoleColor.White);
             locRepo.UpdateLocation(3.15, 61, DateTime.Now);
-            ShowUpdateResults(74, "Updated the CostRate field", ConsoleColor.Yellow, ConsoleColor.White);
+            ShowQueryResults(90, "Updated the CostRate field", ConsoleColor.Yellow, ConsoleColor.White);
             locRepo.UpdateLocation(25.50m, 61, DateTime.Now);
-            ShowUpdateResults(74, "Updated the Availability field", ConsoleColor.Yellow, ConsoleColor.White);
+            ShowQueryResults(90, "Updated the Availability field", ConsoleColor.Yellow, ConsoleColor.White);
+            ShowQueryResults(93,"Dapper Before the update...", ConsoleColor.Cyan, ConsoleColor.White);
+            dapperLocRepo.UpdateLocation(l2);
+            ShowQueryResults(93, "Dapper Before the update...", ConsoleColor.Magenta, ConsoleColor.White);
         }
 
 
@@ -99,7 +124,7 @@ namespace SQLHomework
         ///    and Console.ForegroundColor again. in 
         ///    most cases it will change it back white.
         /// </summary>
-        public static void ShowUpdateResults(int locationID, string message, ConsoleColor colorChange, ConsoleColor colorReset)
+        public static void ShowQueryResults(int locationID, string message, ConsoleColor colorChange, ConsoleColor colorReset)
         {
             Console.WriteLine("Querying the database.... ");
             Console.WriteLine(message);
@@ -119,19 +144,22 @@ namespace SQLHomework
             ShowCrudHeading("D (Deleting records in the table)");
             //Deleting a record based on LocationId
             Console.WriteLine("Deleting in the record location table on LocationID");
-            locRepo.DeleteLocation(74);
-            locRepo.IsRecordInDatabase(74);
+            locRepo.DeleteLocation(90);
+            locRepo.IsRecordInDatabase(90);
 
-            //Deleteing a record based on Name
+            //Deleting a record based on Name
             Console.WriteLine("Deleting in the record location table on Name");
             locRepo.DeleteLocation("Test 1");
-            locRepo.IsRecordInDatabase(75);
+            locRepo.IsRecordInDatabase(91);
 
-            //Deleteing a record based on LocationID and Name 
+            //Deleting a record based on LocationID and Name 
             Console.WriteLine("Deleting in the record location table on LocationID and Name");
-            locRepo.DeleteLocation(76, "Test 2");
-            locRepo.IsRecordInDatabase(76);
+            locRepo.DeleteLocation(92, "Test 2");
+            locRepo.IsRecordInDatabase(92);
 
+            Console.WriteLine("Dapper Deleting in the record location table on LocationID");
+            dapperLocRepo.DeleteLocation(93);
+            locRepo.IsRecordInDatabase(93);
 
         }
 

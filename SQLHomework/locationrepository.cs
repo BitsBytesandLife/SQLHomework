@@ -7,7 +7,13 @@ namespace SQLHomework
 {
     public class LocationRepository : IRepository
     {
-        private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
+        // private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
+        private static string connectionString;
+
+        public LocationRepository(string _connectionString)
+        {
+            connectionString = _connectionString;
+        }
 
         /// <summary>
         ///     This method return the records from the location table.

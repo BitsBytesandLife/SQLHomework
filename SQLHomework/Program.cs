@@ -7,9 +7,11 @@ namespace SQLHomework
 {
     class Program
     {
-        private static LocationRepository locRepo = new LocationRepository();
-        private static DapperLocationRepository dapperLocRepo = new DapperLocationRepository();
+        private static string connString;
+        private static LocationRepository locRepo = new LocationRepository(connString);
+        private static DapperLocationRepository dapperLocRepo = new DapperLocationRepository(connString);
         private static List<Location> ReadLocations = locRepo.GetLocation();
+        
         
 
         static void Main(string[] args)
@@ -194,7 +196,7 @@ namespace SQLHomework
 
                 .Build();
 
-            string connString = config.GetConnectionString("DefaultConnection");
+           connString = config.GetConnectionString("DefaultConnection");
 
         }
     }

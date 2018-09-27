@@ -9,8 +9,14 @@ namespace SQLHomework
 {
     class DapperLocationRepository : IRepository
     {
-        private static string connectionString = "Server=localhost;Database=adventureworks;Uid=root;Pwd=password;";
 
+        private static string connectionString;
+
+        public DapperLocationRepository(string _connectionString)
+        {
+            connectionString = _connectionString;
+        }
+        
         public void CreateLocation(string n, double c, decimal a, DateTime m)
         {
             using (var conn = new MySqlConnection(connectionString))
